@@ -1,0 +1,23 @@
+version: '3'
+services:
+  selenoid:
+    image: aerokube/selenoid:1.10.0
+    restart: always
+    volumes:
+      - "/etc/selenoid:/etc/selenoid"
+      - "/opt/selenoid/logs:/opt/selenoid/logs"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    command: ["-conf", "/etc/selenoid/browsers.json", "-log-output-dir", "/opt/selenoid/logs", "-limit", "16"]
+    ports:
+      - "4444:4444"
+    network_mode: bridge
+  selenoid-ui:
+    network_mode: bridge
+    image: aerokube/selenoid-ui:latest-release
+    ports:
+      - 9090:8080
+    command: ["--selenoid-uri", "http://selenoid:4444"]
+    links:
+      - selenoid
+  chrome86:
+    image: selenoid/vnc:chrome_86.0
