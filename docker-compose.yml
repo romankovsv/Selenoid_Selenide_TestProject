@@ -6,8 +6,9 @@ services:
     volumes:
       - "/etc/selenoid:/etc/selenoid"
       - "/opt/selenoid/logs:/opt/selenoid/logs"
+      - "/opt/selenoid/video:/opt/selenoid/video"
       - "/var/run/docker.sock:/var/run/docker.sock"
-    command: ["-conf", "/etc/selenoid/browsers.json", "-log-output-dir", "/opt/selenoid/logs", "-limit", "16"]
+    command: ["-conf", "/etc/selenoid/browsers.json", "-log-output-dir", "/opt/selenoid/logs", "-video-output-dir", "/opt/selenoid/video","-limit", "16"]
     ports:
       - "4444:4444"
     network_mode: bridge
@@ -21,3 +22,8 @@ services:
       - selenoid
   chrome86:
     image: selenoid/vnc:chrome_86.0
+  video:
+    image: selenoid/video-recorder:latest-release
+    network_mode: bridge
+    links:
+      - selenoid
